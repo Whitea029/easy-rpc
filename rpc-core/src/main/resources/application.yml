@@ -1,0 +1,4 @@
+rpc:
+  name: easy-rpc
+  version: 1.0.1
+  serverPort: 8088
