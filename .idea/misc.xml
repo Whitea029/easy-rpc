@@ -7,11 +7,11 @@
         <option value="$PROJECT_DIR$/example-common/pom.xml" />
         <option value="$PROJECT_DIR$/example-consumer/pom.xml" />
         <option value="$PROJECT_DIR$/example-provider/pom.xml" />
-        <option value="$PROJECT_DIR$/rpc-core/pom.xml" />
         <option value="$PROJECT_DIR$/common/pom.xml" />
         <option value="$PROJECT_DIR$/provider/pom.xml" />
         <option value="$PROJECT_DIR$/consumer/pom.xml" />
         <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/rpc-core/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
