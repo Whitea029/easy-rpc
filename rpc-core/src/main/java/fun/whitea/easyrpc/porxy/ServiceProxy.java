@@ -1,12 +1,12 @@
-package fun.whitea.porxy;
+package fun.whitea.easyrpc.porxy;
 
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
-import fun.whitea.RpcApplication;
-import fun.whitea.model.RpcRequest;
-import fun.whitea.model.RpcResponse;
-import fun.whitea.serializer.SerializeFactory;
-import fun.whitea.serializer.Serializer;
+import fun.whitea.easyrpc.RpcApplication;
+import fun.whitea.easyrpc.model.RpcRequest;
+import fun.whitea.easyrpc.model.RpcResponse;
+import fun.whitea.easyrpc.serializer.SerializeFactory;
+import fun.whitea.easyrpc.serializer.Serializer;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationHandler;

@@ -1,4 +1,4 @@
-package fun.whitea.constant;
+package fun.whitea.easyrpc.constant;
 
 public class RpcConstant {
 

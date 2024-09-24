@@ -1,4 +1,4 @@
-package fun.whitea.register;
+package fun.whitea.easyrpc.register;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

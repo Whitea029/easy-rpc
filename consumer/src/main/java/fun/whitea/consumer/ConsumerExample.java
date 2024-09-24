@@ -2,7 +2,7 @@ package fun.whitea.consumer;
 
 import fun.whitea.common.model.User;
 import fun.whitea.common.service.UserService;
-import fun.whitea.porxy.ServiceProxyFactory;
+import fun.whitea.easyrpc.porxy.ServiceProxyFactory;
 
 public class ConsumerExample {
     public static void main(String[] args) {

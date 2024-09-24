@@ -1,4 +1,4 @@
-package fun.whitea.utils;
+package fun.whitea.easyrpc.utils;
 
 import cn.hutool.core.util.StrUtil;
 import org.yaml.snakeyaml.Yaml;

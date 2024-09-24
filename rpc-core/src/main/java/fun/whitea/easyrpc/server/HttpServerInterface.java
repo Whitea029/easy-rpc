@@ -1,4 +1,4 @@
-package fun.whitea.server;
+package fun.whitea.easyrpc.server;
 
 
 public interface HttpServerInterface {

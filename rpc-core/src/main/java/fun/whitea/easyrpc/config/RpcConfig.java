@@ -1,6 +1,6 @@
-package fun.whitea.config;
+package fun.whitea.easyrpc.config;
 
-import fun.whitea.serializer.SerializerKeys;
+import fun.whitea.easyrpc.serializer.SerializerKeys;
 import lombok.Data;
 
 @Data

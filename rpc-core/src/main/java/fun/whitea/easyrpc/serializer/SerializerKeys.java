@@ -1,4 +1,4 @@
-package fun.whitea.serializer;
+package fun.whitea.easyrpc.serializer;
 
 public interface SerializerKeys {
 

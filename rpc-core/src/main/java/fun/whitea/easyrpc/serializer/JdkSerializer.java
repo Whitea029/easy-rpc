@@ -1,4 +1,4 @@
-package fun.whitea.serializer;
+package fun.whitea.easyrpc.serializer;
 
 import java.io.*;
 

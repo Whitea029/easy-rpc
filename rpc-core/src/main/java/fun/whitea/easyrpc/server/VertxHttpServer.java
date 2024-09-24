@@ -1,4 +1,4 @@
-package fun.whitea.server;
+package fun.whitea.easyrpc.server;
 
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServer;

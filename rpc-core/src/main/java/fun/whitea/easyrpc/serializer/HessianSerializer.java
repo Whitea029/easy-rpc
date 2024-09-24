@@ -1,4 +1,4 @@
-package fun.whitea.serializer;
+package fun.whitea.easyrpc.serializer;
 
 import com.caucho.hessian.io.HessianInput;
 import com.caucho.hessian.io.HessianOutput;

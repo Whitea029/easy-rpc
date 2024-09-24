@@ -1,4 +1,4 @@
-package fun.whitea.model;
+package fun.whitea.easyrpc.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

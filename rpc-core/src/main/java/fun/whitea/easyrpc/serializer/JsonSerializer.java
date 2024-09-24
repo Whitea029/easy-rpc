@@ -1,9 +1,9 @@
-package fun.whitea.serializer;
+package fun.whitea.easyrpc.serializer;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fun.whitea.model.RpcRequest;
-import fun.whitea.model.RpcResponse;
+import fun.whitea.easyrpc.model.RpcRequest;
+import fun.whitea.easyrpc.model.RpcResponse;
 
 import java.io.IOException;
 

@@ -1,6 +1,6 @@
-package fun.whitea.porxy;
+package fun.whitea.easyrpc.porxy;
 
-import fun.whitea.RpcApplication;
+import fun.whitea.easyrpc.RpcApplication;
 
 import java.lang.reflect.Proxy;
 

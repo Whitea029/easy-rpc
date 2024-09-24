@@ -1,11 +1,11 @@
 package fun.whitea.provider;
 
 
-import fun.whitea.RpcApplication;
+import fun.whitea.easyrpc.RpcApplication;
 import fun.whitea.common.service.UserService;
-import fun.whitea.register.LocalRegister;
-import fun.whitea.server.HttpServerInterface;
-import fun.whitea.server.VertxHttpServer;
+import fun.whitea.easyrpc.register.LocalRegister;
+import fun.whitea.easyrpc.server.HttpServerInterface;
+import fun.whitea.easyrpc.server.VertxHttpServer;
 
 public class ProviderExample {
     public static void main(String[] args) {

@@ -1,4 +1,4 @@
-package fun.whitea.porxy;
+package fun.whitea.easyrpc.porxy;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

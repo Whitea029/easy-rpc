@@ -1,8 +1,8 @@
-package fun.whitea;
+package fun.whitea.easyrpc;
 
-import fun.whitea.config.RpcConfig;
-import fun.whitea.constant.RpcConstant;
-import fun.whitea.utils.ConfigUtils;
+import fun.whitea.easyrpc.config.RpcConfig;
+import fun.whitea.easyrpc.constant.RpcConstant;
+import fun.whitea.easyrpc.utils.ConfigUtils;
 
 
 public class RpcApplication {
