@@ -2,7 +2,7 @@ package fun.whitea.serializer;
 
 import java.io.*;
 
-public class JdkSerialize implements Serializer {
+public class JdkSerializer implements Serializer {
     @Override
     public <T> byte[] serialize(T obj) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();

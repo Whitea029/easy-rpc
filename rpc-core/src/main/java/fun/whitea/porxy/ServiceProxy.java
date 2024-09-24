@@ -2,9 +2,10 @@ package fun.whitea.porxy;
 
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
+import fun.whitea.RpcApplication;
 import fun.whitea.model.RpcRequest;
 import fun.whitea.model.RpcResponse;
-import fun.whitea.serializer.JdkSerialize;
+import fun.whitea.serializer.SerializeFactory;
 import fun.whitea.serializer.Serializer;
 
 import java.io.IOException;
@@ -14,7 +15,7 @@ import java.lang.reflect.Method;
 public class ServiceProxy implements InvocationHandler {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) {
-        Serializer serializer = new JdkSerialize();
+        Serializer serializer = SerializeFactory.getInstance(RpcApplication.getConfig().getSerializer());
         RpcRequest rpcRequest = RpcRequest.builder()
                 .serviceName(method.getDeclaringClass().getName())
                 .methodName(method.getName())

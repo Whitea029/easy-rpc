@@ -1,9 +1,10 @@
 package fun.whitea.server;
 
+import fun.whitea.RpcApplication;
 import fun.whitea.model.RpcRequest;
 import fun.whitea.model.RpcResponse;
 import fun.whitea.register.LocalRegister;
-import fun.whitea.serializer.JdkSerialize;
+import fun.whitea.serializer.SerializeFactory;
 import fun.whitea.serializer.Serializer;
 import io.vertx.core.Handler;
 import io.vertx.core.buffer.Buffer;
@@ -17,7 +18,7 @@ import java.lang.reflect.Method;
 public class HttpServerHandler implements Handler<HttpServerRequest> {
     @Override
     public void handle(HttpServerRequest httpServerRequest) {
-        final Serializer serializer = new JdkSerialize();
+        Serializer serializer = SerializeFactory.getInstance(RpcApplication.getConfig().getSerializer());
         System.out.println("Receive request: " + httpServerRequest.method() + " " + httpServerRequest.uri());
         httpServerRequest.bodyHandler(body -> {
             byte[] bytes = body.getBytes();
