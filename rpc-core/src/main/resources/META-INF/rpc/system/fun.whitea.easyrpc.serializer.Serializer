@@ -1,0 +1,4 @@
+jdk=fun.whitea.easyrpc.serializer.JdkSerializer
+json=fun.whitea.easyrpc.serializer.JsonSerializer
+kryo=fun.whitea.easyrpc.serializer.KryoSerializer
+hessian=fun.whitea.easyrpc.serializer.HessianSerializer

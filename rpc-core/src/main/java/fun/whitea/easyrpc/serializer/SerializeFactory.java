@@ -1,23 +1,17 @@
 package fun.whitea.easyrpc.serializer;
 
-import java.util.HashMap;
-import java.util.Map;
+import fun.whitea.easyrpc.spi.SpiLoader;
 
 public class SerializeFactory {
 
-    private static final Map<String, Serializer> KEY_SERIALIZER_MAP = new HashMap<>();
-
     static {
-        KEY_SERIALIZER_MAP.put(SerializerKeys.JDK, new JdkSerializer());
-        KEY_SERIALIZER_MAP.put(SerializerKeys.KRYO, new KryoSerializer());
-        KEY_SERIALIZER_MAP.put(SerializerKeys.JSON, new JsonSerializer());
-        KEY_SERIALIZER_MAP.put(SerializerKeys.HESSIAN, new HessianSerializer());
+        SpiLoader.load(Serializer.class);
     }
 
-    private static final Serializer DEFAULT_SERIALIZER = KEY_SERIALIZER_MAP.get(SerializerKeys.JSON);
+    private static final Serializer DEFAULT_SERIALIZER = new JdkSerializer();
 
     public static Serializer getInstance(String key) {
-        return KEY_SERIALIZER_MAP.getOrDefault(key, DEFAULT_SERIALIZER);
+        return SpiLoader.getInstance(Serializer.class, key);
     }
 
 }
