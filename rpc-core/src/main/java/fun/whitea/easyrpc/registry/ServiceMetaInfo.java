@@ -1,12 +1,9 @@
-package fun.whitea.easyrpc.register;
+package fun.whitea.easyrpc.registry;
 
-import lombok.AllArgsConstructor;
+import cn.hutool.core.util.StrUtil;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class ServiceMetaInfo {
 
     private String serviceName;
@@ -28,5 +25,13 @@ public class ServiceMetaInfo {
     public String getServiceNodeKey() {
         return String.format("%s/%s:%s", getServiceKey(), serviceHost, servicePort);
     }
+
+    public String getServiceAddress() {
+        if (!StrUtil.contains(serviceHost, "http")) {
+            return String.format("http://%s:%s", serviceHost, servicePort);
+        }
+        return String.format("%s:%s", serviceHost, servicePort);
+    }
+
 
 }

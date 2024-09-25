@@ -12,4 +12,5 @@ public class RpcConfig {
     private int serverPort = 8888;
     private boolean mock = false;
     private String serializer = SerializerKeys.JDK;
+    private RegistryConfig registryConfig = new RegistryConfig();
 }

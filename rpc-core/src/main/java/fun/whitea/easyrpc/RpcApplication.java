@@ -1,17 +1,26 @@
 package fun.whitea.easyrpc;
 
+import fun.whitea.easyrpc.config.RegistryConfig;
 import fun.whitea.easyrpc.config.RpcConfig;
 import fun.whitea.easyrpc.constant.RpcConstant;
+import fun.whitea.easyrpc.registry.RegisterFactory;
+import fun.whitea.easyrpc.registry.Registry;
 import fun.whitea.easyrpc.utils.ConfigUtils;
+import lombok.extern.slf4j.Slf4j;
 
 
+@Slf4j
 public class RpcApplication {
 
     private static volatile RpcConfig rpcConfig;
 
     public static void init(RpcConfig config) {
         rpcConfig = config;
-        System.out.println("RpcApplication init, config: " + config.toString());
+        log.info("RpcApplication init, config =  {}", config.toString());
+        RegistryConfig registryConfig = rpcConfig.getRegistryConfig();
+        Registry registry = RegisterFactory.getInstance(registryConfig.getRegistry());
+        registry.init(registryConfig);
+        log.info("RpcApplication init, config = {}", registryConfig);
     }
 
     public static void init() {

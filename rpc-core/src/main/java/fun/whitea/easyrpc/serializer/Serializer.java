@@ -2,8 +2,7 @@ package fun.whitea.easyrpc.serializer;
 
 import java.io.IOException;
 
-public interface
-Serializer {
+public interface Serializer {
 
     <T> byte[] serialize(T obj) throws IOException;
 

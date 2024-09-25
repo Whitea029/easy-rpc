@@ -3,7 +3,7 @@ package fun.whitea.provider;
 
 import fun.whitea.easyrpc.RpcApplication;
 import fun.whitea.common.service.UserService;
-import fun.whitea.easyrpc.register.LocalRegister;
+import fun.whitea.easyrpc.registry.LocalRegister;
 import fun.whitea.easyrpc.server.HttpServerInterface;
 import fun.whitea.easyrpc.server.VertxHttpServer;
 

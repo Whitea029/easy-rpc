@@ -21,24 +21,20 @@ public class ConfigUtils {
 
         try (InputStream input = ConfigUtils.class.getClassLoader().getResourceAsStream(stringBuilder.toString())) {
             if (input == null) {
-                throw new RuntimeException("配置文件未找到");
+                throw new RuntimeException("application.yml not found");
             }
-            // 使用 Yaml 加载整个配置文件
             Yaml yaml = new Yaml();
             Map<String, Object> yamlMap = yaml.load(input);
 
-            // 根据前缀获取子配置
             Map<String, Object> configMap = (Map<String, Object>) yamlMap.get(prefix);
 
             if (configMap == null) {
-                throw new RuntimeException("前缀 " + prefix + " 对应的配置未找到");
+                throw new RuntimeException("prefix: " + prefix + " config not found");
             }
-
-            // 将子配置映射为目标对象
             Yaml subYaml = new Yaml();
             return subYaml.loadAs(new Yaml().dump(configMap), tClass);
         } catch (Exception e) {
-            throw new RuntimeException("加载配置文件失败", e);
+            throw new RuntimeException("Failed to load configuration file", e);
         }
     }
 
