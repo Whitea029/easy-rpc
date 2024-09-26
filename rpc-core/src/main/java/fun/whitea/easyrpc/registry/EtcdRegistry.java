@@ -1,6 +1,7 @@
 package fun.whitea.easyrpc.registry;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.collection.ConcurrentHashSet;
 import cn.hutool.cron.CronUtil;
 import cn.hutool.cron.task.Task;
 import cn.hutool.json.JSONUtil;
@@ -8,6 +9,7 @@ import fun.whitea.easyrpc.config.RegistryConfig;
 import io.etcd.jetcd.*;
 import io.etcd.jetcd.options.GetOption;
 import io.etcd.jetcd.options.PutOption;
+import io.etcd.jetcd.watch.WatchEvent;
 import lombok.extern.slf4j.Slf4j;
 
 import java.nio.charset.StandardCharsets;
@@ -27,6 +29,10 @@ public class EtcdRegistry implements Registry {
     private static final String ETCD_ROOT_PATH = "/rpc/";
 
     private final Set<String> localRegisterNodeKeySet = new HashSet<>();
+
+    private final RegistryServiceCache registryServiceCache = new RegistryServiceCache();
+
+    private final Set<String> watchingKeySet = new ConcurrentHashSet<>();
 
     @Override
     public void init(RegistryConfig registryConfig) {
@@ -55,14 +61,22 @@ public class EtcdRegistry implements Registry {
 
     @Override
     public List<ServiceMetaInfo> serviceDiscovery(String serviceKey) {
-        String searchPrefix = ETCD_ROOT_PATH + serviceKey  +"/";
+        List<ServiceMetaInfo> serviceMetaInfos = registryServiceCache.readCache(serviceKey);
+        if (!CollUtil.isEmpty(serviceMetaInfos)) {
+            return serviceMetaInfos;
+        }
+        String searchPrefix = ETCD_ROOT_PATH + serviceKey + "/";
         try {
             GetOption getOption = GetOption.builder().isPrefix(true).build();
             List<KeyValue> kvs = kvClient.get(ByteSequence.from(searchPrefix, StandardCharsets.UTF_8), getOption).get().getKvs();
-            return kvs.stream().map(kv -> {
+            List<ServiceMetaInfo> metaInfoList = kvs.stream().map(kv -> {
+                String key = kv.getKey().toString(StandardCharsets.UTF_8);
+                watch(key);
                 String value = kv.getValue().toString(StandardCharsets.UTF_8);
                 return JSONUtil.toBean(value, ServiceMetaInfo.class);
             }).collect(Collectors.toList());
+            registryServiceCache.writeCache(serviceKey, metaInfoList);
+            return metaInfoList;
         } catch (Exception e) {
             throw new RuntimeException("Failed to get service list", e);
         }
@@ -97,12 +111,35 @@ public class EtcdRegistry implements Registry {
 
     @Override
     public void destroy() {
-        System.out.println("The current node is offline");
+        log.info("The current node is offline");
+        for (String key : localRegisterNodeKeySet) {
+            try {
+                kvClient.delete(ByteSequence.from(key, StandardCharsets.UTF_8)).get();
+            } catch (Exception e) {
+                throw new RuntimeException(key + "Node offline failed");
+            }
+        }
         if (kvClient != null) {
             kvClient.close();
         }
         if (client != null) {
             client.close();
+        }
+    }
+
+    @Override
+    public void watch(String serviceNodeKey) {
+        Watch watchClient = client.getWatchClient();
+        boolean add = watchingKeySet.add(serviceNodeKey);
+        if (add) {
+            watchClient.watch(ByteSequence.from(serviceNodeKey, StandardCharsets.UTF_8), response -> {
+                for (WatchEvent event : response.getEvents()) {
+                    switch (event.getEventType()) {
+                        case DELETE -> registryServiceCache.clearCache();
+                        default -> {}
+                    }
+                }
+            });
         }
     }
 }

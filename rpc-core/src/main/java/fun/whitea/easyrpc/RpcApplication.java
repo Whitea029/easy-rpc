@@ -21,6 +21,8 @@ public class RpcApplication {
         Registry registry = RegisterFactory.getInstance(registryConfig.getRegistry());
         registry.init(registryConfig);
         log.info("RpcApplication init, config = {}", registryConfig);
+        // JVM 退出前执行
+        Runtime.getRuntime().addShutdownHook(new Thread(registry::destroy));
     }
 
     public static void init() {
@@ -44,6 +46,4 @@ public class RpcApplication {
         }
         return rpcConfig;
     }
-
-
 }

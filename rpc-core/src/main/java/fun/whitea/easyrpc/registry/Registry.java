@@ -18,4 +18,6 @@ public interface Registry {
 
     void destroy();
 
+    void watch(String serviceNodeKey);
+
 }
