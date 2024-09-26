@@ -5,7 +5,7 @@ import fun.whitea.easyrpc.RpcApplication;
 import fun.whitea.common.service.UserService;
 import fun.whitea.easyrpc.registry.LocalRegister;
 import fun.whitea.easyrpc.server.HttpServerInterface;
-import fun.whitea.easyrpc.server.VertxHttpServer;
+import fun.whitea.easyrpc.server.http.VertxHttpServer;
 
 public class ProviderExample {
     public static void main(String[] args) {
