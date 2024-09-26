@@ -1,1 +1,2 @@
 etcd=fun.whitea.easyrpc.registry.EtcdRegistry
+zookeeper=fun.whitea.easyrpc.registry.ZooKeeperRegistry

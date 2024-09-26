@@ -3,3 +3,6 @@ rpc:
   version: 1.0.1
   serverPort: 8088
   mock: false
+  registerConfig:
+    register: zookeeper
+    address: localhost:2181
