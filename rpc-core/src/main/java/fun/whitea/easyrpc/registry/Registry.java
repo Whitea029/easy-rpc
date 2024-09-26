@@ -14,6 +14,8 @@ public interface Registry {
 
     List<ServiceMetaInfo> serviceDiscovery(String serviceKey);
 
+    void heartbeat();
+
     void destroy();
 
 }
