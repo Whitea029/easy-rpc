@@ -1,8 +1,8 @@
 rpc:
   name: easy-rpc
   version: 1.0.1
-  serverPort: 8088
+  serverPort: 9000
   mock: false
-  registerConfig:
-    register: zookeeper
-    address: localhost:2181
+registerConfig:
+  register: zookeeper
+  address: localhost:2181

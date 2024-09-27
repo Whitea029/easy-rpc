@@ -1,4 +1,4 @@
-package fun.whitea.easyrpc.server;
+package fun.whitea.easyrpc.server.http;
 
 import fun.whitea.easyrpc.RpcApplication;
 import fun.whitea.easyrpc.model.RpcRequest;
