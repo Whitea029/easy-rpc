@@ -1,5 +1,6 @@
 package fun.whitea.easyrpc.config;
 
+import fun.whitea.easyrpc.loadbalancer.LoadBalancerKeys;
 import fun.whitea.easyrpc.serializer.SerializerKeys;
 import lombok.Data;
 
@@ -51,4 +52,6 @@ public class RpcConfig {
      * This contains settings related to the service registry, such as address, protocol, etc.
      */
     private RegistryConfig registryConfig = new RegistryConfig();
+
+    private String loadBalancer = LoadBalancerKeys.ROUND_ROBIN;
 }

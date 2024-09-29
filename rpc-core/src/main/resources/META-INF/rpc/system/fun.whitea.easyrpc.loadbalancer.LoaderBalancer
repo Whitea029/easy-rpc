@@ -1,0 +1,3 @@
+random=fun.whitea.easyrpc.loadbalancer.RandomLoadBalancer
+consistentHash=fun.whitea.easyrpc.loadbalancer.ConsistentHashLoadBalancer
+roundRobin=fun.whitea.easyrpc.loadbalancer.RoundRobinLoadBalancer
