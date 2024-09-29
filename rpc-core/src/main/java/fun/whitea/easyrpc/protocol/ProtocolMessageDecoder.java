@@ -6,9 +6,8 @@ import fun.whitea.easyrpc.model.RpcRequest;
 import fun.whitea.easyrpc.model.RpcResponse;
 import fun.whitea.easyrpc.serializer.SerializeFactory;
 import fun.whitea.easyrpc.serializer.Serializer;
-import lombok.SneakyThrows;
-
 import io.vertx.core.buffer.Buffer;
+import lombok.SneakyThrows;
 
 public class ProtocolMessageDecoder {
 
@@ -27,28 +26,26 @@ public class ProtocolMessageDecoder {
         header.setRequestId(buffer.getLong(5));
         header.setBodyLength(buffer.getInt(13));
         byte[] bodyBytes = buffer.getBytes(17, 17 + header.getBodyLength());
-        ProtocolMessageSerializerEnum protocolMessageSerializerEnum = ProtocolMessageSerializerEnum.fromKey(header.getSerializer());
-        if (protocolMessageSerializerEnum == null) {
+        ProtocolMessageSerializerEnum serializerEnum = ProtocolMessageSerializerEnum.fromKey(header.getSerializer());
+        if (serializerEnum == null) {
             throw new RuntimeException("unknown protocol message serializer");
         }
-        Serializer serializer = SerializeFactory.getInstance(protocolMessageSerializerEnum.getVal());
-        ProtocolMessageTypeEnum protocolMessageTypeEnum = ProtocolMessageTypeEnum.of(header.getType());
+        Serializer serializer = SerializeFactory.getInstance(serializerEnum.getVal());
+        ProtocolMessageTypeEnum protocolMessageTypeEnum = ProtocolMessageTypeEnum.fromKey(header.getType());
         if (protocolMessageTypeEnum == null) {
             throw new RuntimeException("unknown protocol message type");
         }
         switch (protocolMessageTypeEnum) {
-            case REQUEST -> {
-                RpcRequest deserialize = serializer.deserialize(bodyBytes, RpcRequest.class);
-                return new ProtocolMessage<>(header, deserialize);
-            }
-            case RESPONSE -> {
-                RpcResponse deserialize = serializer.deserialize(bodyBytes, RpcResponse.class);
-                return new ProtocolMessage<>(header, deserialize);
-            }
-            default -> throw new RuntimeException("unknown protocol message type");
+            case REQUEST:
+                RpcRequest req = serializer.deserialize(bodyBytes, RpcRequest.class);
+                return new ProtocolMessage<>(header, req);
+            case RESPONSE:
+                RpcResponse resp = serializer.deserialize(bodyBytes, RpcResponse.class);
+                return new ProtocolMessage<>(header, resp);
+            case HEART_BEAT:
+            case OTHERS:
+            default:
+                throw new RuntimeException("unknown protocol message type");
         }
-
-
     }
-
 }

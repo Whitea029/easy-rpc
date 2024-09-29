@@ -17,8 +17,8 @@ public class ProtocolMessageEncoder {
         buffer
                 .appendByte(header.getMagic())
                 .appendByte(header.getVersion())
-                .appendByte(header.getType())
                 .appendByte(header.getSerializer())
+                .appendByte(header.getType())
                 .appendByte(header.getStatus())
                 .appendLong(header.getRequestId());
         ProtocolMessageSerializerEnum protocolMessageSerializerEnum = ProtocolMessageSerializerEnum.fromKey(header.getSerializer());

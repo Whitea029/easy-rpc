@@ -26,7 +26,7 @@ public class EtcdRegistry implements Registry {
 
     private KV kvClient;
 
-    private static final String ETCD_ROOT_PATH = "/rpc/";
+    private static final String ETCD_ROOT_PATH = "/rpc/etcd";
 
     private final Set<String> localRegisterNodeKeySet = new HashSet<>();
 
@@ -45,18 +45,20 @@ public class EtcdRegistry implements Registry {
     public void register(ServiceMetaInfo serviceMetaInfo) throws Exception {
         Lease leaseClient = client.getLeaseClient();
         long leaseId = leaseClient.grant(30).get().getID();
-        String registerKey = ETCD_ROOT_PATH + serviceMetaInfo.getServiceNodeKey();
-        ByteSequence key = ByteSequence.from(registerKey, StandardCharsets.UTF_8);
-        ByteSequence val = ByteSequence.from(JSONUtil.toJsonStr(serviceMetaInfo), StandardCharsets.UTF_8);
-        PutOption putOption = PutOption.builder().withLeaseId(leaseId).build();
-        kvClient.put(key, val, putOption).get();
+        String registerKey = ETCD_ROOT_PATH + "/" +  serviceMetaInfo.getServiceNodeKey();
+        kvClient.put(
+                ByteSequence.from(registerKey, StandardCharsets.UTF_8),
+                ByteSequence.from(JSONUtil.toJsonStr(serviceMetaInfo), StandardCharsets.UTF_8),
+                PutOption.builder().withLeaseId(leaseId).build()
+        ).get();
         localRegisterNodeKeySet.add(registerKey);
     }
 
     @Override
     public void unRegister(ServiceMetaInfo serviceMetaInfo) {
-        kvClient.delete(ByteSequence.from(ETCD_ROOT_PATH + serviceMetaInfo.getServiceNodeKey(), StandardCharsets.UTF_8));
-        localRegisterNodeKeySet.remove(serviceMetaInfo.getServiceNodeKey());
+        String registerKey = ETCD_ROOT_PATH + "/" + serviceMetaInfo.getServiceNodeKey();
+        kvClient.delete(ByteSequence.from(registerKey, StandardCharsets.UTF_8));
+        localRegisterNodeKeySet.remove(registerKey);
     }
 
     @Override
@@ -68,13 +70,20 @@ public class EtcdRegistry implements Registry {
         String searchPrefix = ETCD_ROOT_PATH + serviceKey + "/";
         try {
             GetOption getOption = GetOption.builder().isPrefix(true).build();
-            List<KeyValue> kvs = kvClient.get(ByteSequence.from(searchPrefix, StandardCharsets.UTF_8), getOption).get().getKvs();
-            List<ServiceMetaInfo> metaInfoList = kvs.stream().map(kv -> {
-                String key = kv.getKey().toString(StandardCharsets.UTF_8);
-                watch(key);
-                String value = kv.getValue().toString(StandardCharsets.UTF_8);
-                return JSONUtil.toBean(value, ServiceMetaInfo.class);
-            }).collect(Collectors.toList());
+            List<KeyValue> kvs = kvClient.get(
+                            ByteSequence.from(searchPrefix, StandardCharsets.UTF_8),
+                            getOption)
+                    .get()
+                    .getKvs();
+            List<ServiceMetaInfo> metaInfoList = kvs
+                    .stream()
+                    .map(kv -> {
+                        String key = kv.getKey().toString(StandardCharsets.UTF_8);
+                        watch(key);
+                        String value = kv.getValue().toString(StandardCharsets.UTF_8);
+                        return JSONUtil.toBean(value, ServiceMetaInfo.class);
+                    })
+                    .collect(Collectors.toList());
             registryServiceCache.writeCache(serviceKey, metaInfoList);
             return metaInfoList;
         } catch (Exception e) {
@@ -135,8 +144,12 @@ public class EtcdRegistry implements Registry {
             watchClient.watch(ByteSequence.from(serviceNodeKey, StandardCharsets.UTF_8), response -> {
                 for (WatchEvent event : response.getEvents()) {
                     switch (event.getEventType()) {
-                        case DELETE -> registryServiceCache.clearCache();
-                        default -> {}
+                        case DELETE:
+                            registryServiceCache.clearCache(serviceNodeKey);
+                            break;
+                        case PUT:
+                        default:
+                            break;
                     }
                 }
             });

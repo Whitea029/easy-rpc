@@ -4,7 +4,7 @@ rpc:
   serverPort: 9000
   mock: false
   registryConfig:
-#    registry: zookeeper
-    registry: etcd
-#    address: http://localhost:2181
-    address: http://localhost:2380
+    registry: zookeeper
+#    registry: etcd
+    address: localhost:2181
+#    address: http://localhost:2380

@@ -16,8 +16,8 @@ public class RegistryServiceCache {
         return this.serviceCache.get(serviceKey);
     }
 
-    void clearCache() {
-        this.serviceCache.clear();
+    void clearCache(String serviceKey) {
+        this.serviceCache.remove(serviceKey);
     }
 
 }

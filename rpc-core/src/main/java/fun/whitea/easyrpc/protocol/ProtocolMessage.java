@@ -14,6 +14,8 @@ public class ProtocolMessage<T> {
     private T body;
 
     @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class Header {
         private byte magic;
         private byte version;

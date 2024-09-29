@@ -14,7 +14,7 @@ public enum ProtocolMessageTypeEnum {
 
     private final int key;
 
-    public static ProtocolMessageTypeEnum of(int key) {
+    public static ProtocolMessageTypeEnum fromKey(int key) {
         for (ProtocolMessageTypeEnum type : ProtocolMessageTypeEnum.values()) {
             if (type.key == key) {
                 return type;

@@ -57,29 +57,34 @@ public class ZooKeeperRegistry implements Registry {
 
     @Override
     public void register(ServiceMetaInfo serviceMetaInfo) throws Exception {
+        String registerKey = ZK_ROOT_PATH + "/" + serviceMetaInfo.getServiceNodeKey();
         serviceDiscovery.registerService(buildServiceInstance(serviceMetaInfo));
-        localRegisterNodeKeySet.add(ZK_ROOT_PATH + "/" + serviceMetaInfo.getServiceNodeKey());
+        localRegisterNodeKeySet.add(registerKey);
     }
 
     @Override
     public void unRegister(ServiceMetaInfo serviceMetaInfo) {
+        String registerKey = ZK_ROOT_PATH + "/" + serviceMetaInfo.getServiceNodeKey();
         try {
             serviceDiscovery.unregisterService(buildServiceInstance(serviceMetaInfo));
         } catch (Exception e) {
             throw new RuntimeException("fail to unregister service", e);
         }
-        localRegisterNodeKeySet.remove(ZK_ROOT_PATH + "/" + serviceMetaInfo.getServiceNodeKey());
+        localRegisterNodeKeySet.remove(registerKey);
     }
 
     @Override
     public List<ServiceMetaInfo> serviceDiscovery(String serviceKey) {
         List<ServiceMetaInfo> serviceMetaInfos = registryServiceCache.readCache(serviceKey);
-        if (!CollUtil.isEmpty(serviceMetaInfos)) {
+        if (CollUtil.isNotEmpty(serviceMetaInfos)) {
             return serviceMetaInfos;
         }
         try {
             Collection<ServiceInstance<ServiceMetaInfo>> serviceMetaInfoServiceInstance = serviceDiscovery.queryForInstances(serviceKey);
-            List<ServiceMetaInfo> serviceMetaInfoList = serviceMetaInfoServiceInstance.stream().map(ServiceInstance::getPayload).toList();
+            List<ServiceMetaInfo> serviceMetaInfoList = serviceMetaInfoServiceInstance
+                    .stream()
+                    .map(ServiceInstance::getPayload)
+                    .toList();
             registryServiceCache.writeCache(serviceKey, serviceMetaInfoList);
             return serviceMetaInfoList;
         } catch (Exception e) {
@@ -102,6 +107,9 @@ public class ZooKeeperRegistry implements Registry {
                 throw new RuntimeException(key + "fail to offline", e);
             }
         }
+        if (client != null) {
+            client.close();
+        }
     }
 
     @Override
@@ -114,8 +122,8 @@ public class ZooKeeperRegistry implements Registry {
             cache.listenable().addListener(
                     CuratorCacheListener
                             .builder()
-                            .forDeletes(childData -> registryServiceCache.clearCache())
-                            .forChanges((old, now) -> registryServiceCache.clearCache())
+                            .forDeletes(childData -> registryServiceCache.clearCache(serviceNodeKey))
+                            .forChanges((old, now) -> registryServiceCache.clearCache(serviceNodeKey))
                             .build()
             );
         }
@@ -127,7 +135,7 @@ public class ZooKeeperRegistry implements Registry {
             return ServiceInstance
                     .<ServiceMetaInfo>builder()
                     .id(serviceAddress)
-                    .name(serviceMetaInfo.getServiceName())
+                    .name(serviceMetaInfo.getServiceKey())
                     .address(serviceAddress)
                     .payload(serviceMetaInfo)
                     .build();

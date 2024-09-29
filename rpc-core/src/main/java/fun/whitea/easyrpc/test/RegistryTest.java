@@ -5,8 +5,11 @@ import fun.whitea.easyrpc.config.RegistryConfig;
 import fun.whitea.easyrpc.registry.EtcdRegistry;
 import fun.whitea.easyrpc.registry.Registry;
 import fun.whitea.easyrpc.registry.ServiceMetaInfo;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.List;
 
 public class RegistryTest {
 
@@ -19,7 +22,7 @@ public class RegistryTest {
         registry.init(registryConfig);
     }
 
-//    @Test
+    @Test
     public void register() throws Exception {
         ServiceMetaInfo serviceMetaInfo = new ServiceMetaInfo();
         serviceMetaInfo.setServiceName("myService");
@@ -41,34 +44,34 @@ public class RegistryTest {
         registry.register(serviceMetaInfo);
     }
 
-//    @Test
-//    public void unRegister() {
-//        ServiceMetaInfo serviceMetaInfo = new ServiceMetaInfo();
-//        serviceMetaInfo.setServiceName("myService");
-//        serviceMetaInfo.setServiceVersion("1.0");
-//        serviceMetaInfo.setServiceHost("localhost");
-//        serviceMetaInfo.setServicePort(1234);
-//        registry.unRegister(serviceMetaInfo);
-//    }
-//
-//    @Test
-//    public void serviceDiscovery() {
-//        ServiceMetaInfo serviceMetaInfo = new ServiceMetaInfo();
-//        serviceMetaInfo.setServiceName("myService");
-//        serviceMetaInfo.setServiceVersion("1.0");
-//        String serviceKey = serviceMetaInfo.getServiceKey();
-//        List<ServiceMetaInfo> serviceMetaInfoList = registry.serviceDiscovery(serviceKey);
-//        Assert.assertNotNull(serviceMetaInfoList);
-//    }
-
+    @Test
+    public void unRegister() {
+        ServiceMetaInfo serviceMetaInfo = new ServiceMetaInfo();
+        serviceMetaInfo.setServiceName("myService");
+        serviceMetaInfo.setServiceVersion("1.0");
+        serviceMetaInfo.setServiceHost("localhost");
+        serviceMetaInfo.setServicePort(1234);
+        registry.unRegister(serviceMetaInfo);
+    }
 
     @Test
-    public void heartBeat() throws Exception {
-        // init 方法中已经执行心跳检测了
-        register();
-        // 阻塞 1 分钟
-        Thread.sleep(60 * 1000L);
+    public void serviceDiscovery() {
+        ServiceMetaInfo serviceMetaInfo = new ServiceMetaInfo();
+        serviceMetaInfo.setServiceName("myService");
+        serviceMetaInfo.setServiceVersion("1.0");
+        String serviceKey = serviceMetaInfo.getServiceKey();
+        List<ServiceMetaInfo> serviceMetaInfoList = registry.serviceDiscovery(serviceKey);
+        Assert.assertNotNull(serviceMetaInfoList);
     }
+
+//
+//    @Test
+//    public void heartBeat() throws Exception {
+//        // init 方法中已经执行心跳检测了
+//        register();
+//        // 阻塞 1 分钟
+//        Thread.sleep(60 * 1000L);
+//    }
 
 
 }

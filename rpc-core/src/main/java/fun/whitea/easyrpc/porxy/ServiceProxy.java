@@ -14,7 +14,6 @@ import fun.whitea.easyrpc.protocol.*;
 import fun.whitea.easyrpc.registry.RegisterFactory;
 import fun.whitea.easyrpc.registry.Registry;
 import fun.whitea.easyrpc.registry.ServiceMetaInfo;
-import fun.whitea.easyrpc.serializer.SerializeFactory;
 import fun.whitea.easyrpc.serializer.Serializer;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
@@ -25,20 +24,19 @@ import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 public class ServiceProxy implements InvocationHandler {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) {
         RpcConfig rpcConfig = RpcApplication.getConfig();
-        Serializer serializer = SerializeFactory.getInstance(rpcConfig.getSerializer());
         String serviceName = method.getDeclaringClass().getName();
         RpcRequest rpcRequest = RpcRequest.builder()
                 .serviceName(serviceName)
                 .methodName(method.getName())
                 .parameterTypes(method.getParameterTypes())
                 .args(args)
+                .serviceVersion(RpcConstant.DEFAULT_SERVICE_VERSION)
                 .build();
         try {
             Registry registry = RegisterFactory.getInstance(rpcConfig.getRegistryConfig().getRegistry());
@@ -75,15 +73,16 @@ public class ServiceProxy implements InvocationHandler {
             if (result.succeeded()) {
                 System.out.println("Connect to Tcp Server");
                 NetSocket socket = result.result();
-                ProtocolMessage<RpcRequest> rpcRequestProtocolMessage = new ProtocolMessage<>();
-                ProtocolMessage.Header header = new ProtocolMessage.Header();
-                header.setMagic(ProtocolConstant.PROTOCOL_MAGIC);
-                header.setVersion(ProtocolConstant.PROTOCOL_VERSION);
-                header.setSerializer(Byte.parseByte(Objects.requireNonNull(ProtocolMessageSerializerEnum.fromVal(RpcApplication.getConfig().getSerializer())).getVal()));
-                header.setType((byte) ProtocolMessageTypeEnum.REQUEST.getKey());
-                header.setRequestId(IdUtil.getSnowflakeNextId());
-                rpcRequestProtocolMessage.setHeader(header);
-                rpcRequestProtocolMessage.setBody(rpcRequest);
+                ProtocolMessage.Header header = new ProtocolMessage.Header(
+                        ProtocolConstant.PROTOCOL_MAGIC,
+                        ProtocolConstant.PROTOCOL_VERSION,
+                        (byte) ProtocolMessageSerializerEnum.fromVal(RpcApplication.getConfig().getSerializer()).getKey(),
+                        (byte) ProtocolMessageTypeEnum.REQUEST.getKey(),
+                        (byte) ProtocolMessageStatusEnum.OK.getVal(),
+                        IdUtil.getSnowflakeNextId(),
+                        rpcRequest.toString().getBytes().length
+                );
+                ProtocolMessage<RpcRequest> rpcRequestProtocolMessage = new ProtocolMessage<>(header, rpcRequest);
                 try {
                     Buffer encode = ProtocolMessageEncoder.encode(rpcRequestProtocolMessage);
                     socket.write(encode);
