@@ -11,6 +11,7 @@ import fun.whitea.easyrpc.registry.RegisterFactory;
 import fun.whitea.easyrpc.registry.Registry;
 import fun.whitea.easyrpc.registry.ServiceMetaInfo;
 import fun.whitea.easyrpc.server.tcp.VertxTcpServer;
+import fun.whitea.easyrpc.test.VertxTcpTestServer;
 
 public class ProviderExample {
     public static void main(String[] args) {
@@ -34,6 +35,7 @@ public class ProviderExample {
         }
 
         VertxTcpServer vertxTcpServer = new VertxTcpServer();
+//        VertxTcpTestServer vertxTcpServer = new VertxTcpTestServer();
         vertxTcpServer.doStart(9000);
 
     }
