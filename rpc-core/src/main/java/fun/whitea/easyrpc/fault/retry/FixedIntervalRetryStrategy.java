@@ -9,7 +9,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
-public class FixIntervalRetryStrategy implements RetryStrategy {
+public class FixedIntervalRetryStrategy implements RetryStrategy {
     @SneakyThrows
     @Override
     public RpcResponse doRetry(Callable<RpcResponse> callable) {

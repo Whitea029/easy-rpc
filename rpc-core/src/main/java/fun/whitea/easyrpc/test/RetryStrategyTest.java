@@ -1,13 +1,12 @@
 package fun.whitea.easyrpc.test;
 
-import fun.whitea.easyrpc.fault.retry.FixIntervalRetryStrategy;
-import fun.whitea.easyrpc.fault.retry.NoRetryStrategy;
+import fun.whitea.easyrpc.fault.retry.FixedIntervalRetryStrategy;
 import fun.whitea.easyrpc.fault.retry.RetryStrategy;
 import fun.whitea.easyrpc.model.RpcResponse;
 import org.junit.Test;
 
 public class RetryStrategyTest {
-    RetryStrategy retryStrategy = new FixIntervalRetryStrategy();
+    RetryStrategy retryStrategy = new FixedIntervalRetryStrategy();
 
     @Test
     public void doRetry() {
