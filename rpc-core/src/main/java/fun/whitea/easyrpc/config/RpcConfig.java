@@ -1,6 +1,8 @@
 package fun.whitea.easyrpc.config;
 
 import fun.whitea.easyrpc.fault.retry.RetryStrategyKeys;
+import fun.whitea.easyrpc.fault.tolerant.TolerantStrategy;
+import fun.whitea.easyrpc.fault.tolerant.TolerantStrategyKeys;
 import fun.whitea.easyrpc.loadbalancer.LoadBalancerKeys;
 import fun.whitea.easyrpc.serializer.SerializerKeys;
 import lombok.Data;
@@ -57,4 +59,7 @@ public class RpcConfig {
     private String loadBalancer = LoadBalancerKeys.ROUND_ROBIN;
 
     private String retryStrategy = RetryStrategyKeys.FIXED_INTERVAL;
+
+    private String tolerantStrategy = TolerantStrategyKeys.FAIL_FAST;
+
 }

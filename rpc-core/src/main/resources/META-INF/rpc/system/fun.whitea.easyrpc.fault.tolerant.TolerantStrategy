@@ -1,0 +1,4 @@
+failFast=fun.whitea.easyrpc.fault.tolerant.FailFastTolerantStrategy
+failSafe=fun.whitea.easyrpc.fault.tolerant.FailSafeTolerantStrategy
+
+

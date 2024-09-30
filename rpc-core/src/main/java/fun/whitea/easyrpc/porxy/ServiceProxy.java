@@ -6,6 +6,8 @@ import fun.whitea.easyrpc.config.RpcConfig;
 import fun.whitea.easyrpc.constant.RpcConstant;
 import fun.whitea.easyrpc.fault.retry.RetryStrategy;
 import fun.whitea.easyrpc.fault.retry.RetryStrategyFactory;
+import fun.whitea.easyrpc.fault.tolerant.TolerantStrategy;
+import fun.whitea.easyrpc.fault.tolerant.TolerantStrategyFactory;
 import fun.whitea.easyrpc.loadbalancer.LoadBalancer;
 import fun.whitea.easyrpc.loadbalancer.LoadBalancerFactory;
 import fun.whitea.easyrpc.model.RpcRequest;
@@ -33,7 +35,7 @@ public class ServiceProxy implements InvocationHandler {
                 .args(args)
                 .serviceVersion(RpcConstant.DEFAULT_SERVICE_VERSION)
                 .build();
-        try {
+
             Registry registry = RegisterFactory.getInstance(rpcConfig.getRegistryConfig().getRegistry());
             ServiceMetaInfo serviceMetaInfo = new ServiceMetaInfo();
             serviceMetaInfo.setServiceName(serviceName);
@@ -45,14 +47,17 @@ public class ServiceProxy implements InvocationHandler {
             Map<String, Object> requestParams = new HashMap<>();
             requestParams.put("methodName", rpcRequest.getMethodName());
             ServiceMetaInfo select = loadBalancer.select(requestParams, serviceMetaInfos);
-            RetryStrategy retryStrategy = RetryStrategyFactory.getsInstance(rpcConfig.getRetryStrategy());
-            RpcResponse rpcResponse = retryStrategy.doRetry(() ->
+        RetryStrategy retryStrategy = RetryStrategyFactory.getsInstance(rpcConfig.getRetryStrategy());
+        RpcResponse rpcResponse = new RpcResponse();
+        try {
+            rpcResponse = retryStrategy.doRetry(() ->
                     VertxTcpClient.doRequest(rpcRequest, select)
             );
-            return rpcResponse.getData();
         } catch (Exception e) {
-            e.printStackTrace();
+            TolerantStrategy tolerantStrategy = TolerantStrategyFactory.getInstance(rpcConfig.getTolerantStrategy());
+            rpcResponse = tolerantStrategy.doTolerant(null, e);
         }
-        return null;
+
+        return rpcResponse.getData();
     }
 }
