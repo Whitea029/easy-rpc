@@ -3,7 +3,7 @@ package fun.whitea.easyrpc;
 import fun.whitea.easyrpc.config.RegistryConfig;
 import fun.whitea.easyrpc.config.RpcConfig;
 import fun.whitea.easyrpc.constant.RpcConstant;
-import fun.whitea.easyrpc.registry.RegisterFactory;
+import fun.whitea.easyrpc.registry.RegistryFactory;
 import fun.whitea.easyrpc.registry.Registry;
 import fun.whitea.easyrpc.utils.ConfigUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +18,7 @@ public class RpcApplication {
         rpcConfig = config;
         log.info("RpcApplication init, config =  {}", config.toString());
         RegistryConfig registryConfig = rpcConfig.getRegistryConfig();
-        Registry registry = RegisterFactory.getInstance(registryConfig.getRegistry());
+        Registry registry = RegistryFactory.getInstance(registryConfig.getRegistry());
         registry.init(registryConfig);
         log.info("RpcApplication init, config = {}", registryConfig);
         // JVM 退出前执行

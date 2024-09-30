@@ -12,7 +12,7 @@ import fun.whitea.easyrpc.loadbalancer.LoadBalancer;
 import fun.whitea.easyrpc.loadbalancer.LoadBalancerFactory;
 import fun.whitea.easyrpc.model.RpcRequest;
 import fun.whitea.easyrpc.model.RpcResponse;
-import fun.whitea.easyrpc.registry.RegisterFactory;
+import fun.whitea.easyrpc.registry.RegistryFactory;
 import fun.whitea.easyrpc.registry.Registry;
 import fun.whitea.easyrpc.registry.ServiceMetaInfo;
 import fun.whitea.easyrpc.server.tcp.VertxTcpClient;
@@ -35,8 +35,7 @@ public class ServiceProxy implements InvocationHandler {
                 .args(args)
                 .serviceVersion(RpcConstant.DEFAULT_SERVICE_VERSION)
                 .build();
-
-            Registry registry = RegisterFactory.getInstance(rpcConfig.getRegistryConfig().getRegistry());
+            Registry registry = RegistryFactory.getInstance(rpcConfig.getRegistryConfig().getRegistry());
             ServiceMetaInfo serviceMetaInfo = new ServiceMetaInfo();
             serviceMetaInfo.setServiceName(serviceName);
             serviceMetaInfo.setServiceVersion(RpcConstant.DEFAULT_SERVICE_VERSION);
@@ -48,7 +47,7 @@ public class ServiceProxy implements InvocationHandler {
             requestParams.put("methodName", rpcRequest.getMethodName());
             ServiceMetaInfo select = loadBalancer.select(requestParams, serviceMetaInfos);
         RetryStrategy retryStrategy = RetryStrategyFactory.getsInstance(rpcConfig.getRetryStrategy());
-        RpcResponse rpcResponse = new RpcResponse();
+        RpcResponse rpcResponse;
         try {
             rpcResponse = retryStrategy.doRetry(() ->
                     VertxTcpClient.doRequest(rpcRequest, select)
@@ -57,7 +56,6 @@ public class ServiceProxy implements InvocationHandler {
             TolerantStrategy tolerantStrategy = TolerantStrategyFactory.getInstance(rpcConfig.getTolerantStrategy());
             rpcResponse = tolerantStrategy.doTolerant(null, e);
         }
-
         return rpcResponse.getData();
     }
 }

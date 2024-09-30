@@ -6,7 +6,7 @@ import fun.whitea.easyrpc.protocol.ProtocolMessage;
 import fun.whitea.easyrpc.protocol.ProtocolMessageDecoder;
 import fun.whitea.easyrpc.protocol.ProtocolMessageEncoder;
 import fun.whitea.easyrpc.protocol.ProtocolMessageTypeEnum;
-import fun.whitea.easyrpc.registry.LocalRegister;
+import fun.whitea.easyrpc.registry.LocalRegistry;
 import io.vertx.core.Handler;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.net.NetSocket;
@@ -27,7 +27,7 @@ public class TcpServerHandler implements Handler<NetSocket> {
             RpcRequest rpcReq = repMessage.getBody();
             RpcResponse rpcResp = new RpcResponse();
             try {
-                Class<?> implClass = LocalRegister.get(rpcReq.getServiceName());
+                Class<?> implClass = LocalRegistry.get(rpcReq.getServiceName());
                 Method method = implClass.getMethod(rpcReq.getMethodName(), rpcReq.getParameterTypes());
                 Object res = method.invoke(implClass.newInstance(), rpcReq.getArgs());
                 rpcResp.setData(res);

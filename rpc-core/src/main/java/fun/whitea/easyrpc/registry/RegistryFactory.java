@@ -2,7 +2,7 @@ package fun.whitea.easyrpc.registry;
 
 import fun.whitea.easyrpc.spi.SpiLoader;
 
-public class RegisterFactory {
+public class RegistryFactory {
 
     static {
         SpiLoader.load(Registry.class);

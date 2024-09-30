@@ -3,7 +3,7 @@ package fun.whitea.easyrpc.registry;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class LocalRegister {
+public class LocalRegistry {
 
     private static final Map<String, Class<?>> map = new ConcurrentHashMap<>();
 

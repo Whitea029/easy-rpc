@@ -3,7 +3,7 @@ package fun.whitea.easyrpc.server.http;
 import fun.whitea.easyrpc.RpcApplication;
 import fun.whitea.easyrpc.model.RpcRequest;
 import fun.whitea.easyrpc.model.RpcResponse;
-import fun.whitea.easyrpc.registry.LocalRegister;
+import fun.whitea.easyrpc.registry.LocalRegistry;
 import fun.whitea.easyrpc.serializer.SerializeFactory;
 import fun.whitea.easyrpc.serializer.Serializer;
 import io.vertx.core.Handler;
@@ -36,7 +36,7 @@ public class HttpServerHandler implements Handler<HttpServerRequest> {
             }
 
             try {
-                Class<?> implClass = LocalRegister.get(rpcReq.getServiceName());
+                Class<?> implClass = LocalRegistry.get(rpcReq.getServiceName());
                 Method method = implClass.getMethod(rpcReq.getMethodName(), rpcReq.getParameterTypes());
                 Object res = method.invoke(implClass.newInstance(), rpcReq.getArgs());
                 rpcResp.setData(res);
