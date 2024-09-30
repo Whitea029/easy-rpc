@@ -1,0 +1,3 @@
+no=fun.whitea.easyrpc.fault.retry.NoRetryStrategy
+fixedInterval=fun.whitea.easyrpc.fault.retry.FixedIntervalStrategy
+

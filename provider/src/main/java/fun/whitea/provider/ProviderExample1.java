@@ -12,7 +12,7 @@ import fun.whitea.easyrpc.registry.Registry;
 import fun.whitea.easyrpc.registry.ServiceMetaInfo;
 import fun.whitea.easyrpc.server.tcp.VertxTcpServer;
 
-public class ProviderExample {
+public class ProviderExample1 {
     public static void main(String[] args) {
         RpcApplication. init();
 
@@ -35,7 +35,7 @@ public class ProviderExample {
 
         VertxTcpServer vertxTcpServer = new VertxTcpServer();
 //        VertxTcpTestServer vertxTcpServer = new VertxTcpTestServer();
-        vertxTcpServer.doStart(9000);
+        vertxTcpServer.doStart(10000);
 
     }
 }

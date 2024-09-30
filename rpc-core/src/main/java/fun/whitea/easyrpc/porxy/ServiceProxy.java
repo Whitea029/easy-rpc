@@ -4,9 +4,12 @@ import cn.hutool.core.collection.CollUtil;
 import fun.whitea.easyrpc.RpcApplication;
 import fun.whitea.easyrpc.config.RpcConfig;
 import fun.whitea.easyrpc.constant.RpcConstant;
+import fun.whitea.easyrpc.fault.retry.RetryStrategy;
+import fun.whitea.easyrpc.fault.retry.RetryStrategyFactory;
 import fun.whitea.easyrpc.loadbalancer.LoadBalancer;
 import fun.whitea.easyrpc.loadbalancer.LoadBalancerFactory;
 import fun.whitea.easyrpc.model.RpcRequest;
+import fun.whitea.easyrpc.model.RpcResponse;
 import fun.whitea.easyrpc.registry.RegisterFactory;
 import fun.whitea.easyrpc.registry.Registry;
 import fun.whitea.easyrpc.registry.ServiceMetaInfo;
@@ -42,7 +45,11 @@ public class ServiceProxy implements InvocationHandler {
             Map<String, Object> requestParams = new HashMap<>();
             requestParams.put("methodName", rpcRequest.getMethodName());
             ServiceMetaInfo select = loadBalancer.select(requestParams, serviceMetaInfos);
-            return VertxTcpClient.doRequest(rpcRequest, select).getData();
+            RetryStrategy retryStrategy = RetryStrategyFactory.getsInstance(rpcConfig.getRetryStrategy());
+            RpcResponse rpcResponse = retryStrategy.doRetry(() ->
+                    VertxTcpClient.doRequest(rpcRequest, select)
+            );
+            return rpcResponse.getData();
         } catch (Exception e) {
             e.printStackTrace();
         }

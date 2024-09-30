@@ -1,5 +1,6 @@
 package fun.whitea.easyrpc.config;
 
+import fun.whitea.easyrpc.fault.retry.RetryStrategyKeys;
 import fun.whitea.easyrpc.loadbalancer.LoadBalancerKeys;
 import fun.whitea.easyrpc.serializer.SerializerKeys;
 import lombok.Data;
@@ -54,4 +55,6 @@ public class RpcConfig {
     private RegistryConfig registryConfig = new RegistryConfig();
 
     private String loadBalancer = LoadBalancerKeys.ROUND_ROBIN;
+
+    private String retryStrategy = RetryStrategyKeys.FIXED_INTERVAL;
 }
